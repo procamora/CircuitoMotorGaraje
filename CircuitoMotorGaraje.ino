@@ -10,19 +10,7 @@
 
 #define MODO_DEBUG true
 
-void setup() {
-  if (MODO_DEBUG) {
-    Serial.begin(115200);
-    Serial.println();
-    Serial.println("Inicio");
-  }
 
-  pinMode(RELAY_OPEN_DOOR, OUTPUT);
-  pinMode(RELAY_CLOSE_DOOR, OUTPUT);
-  pinMode(IS_OPEN_DOOR, INPUT);
-  pinMode(IS_CLOSE_DOOR, INPUT);
-  pinMode(CLICK_BUTTON, INPUT);
-}
 
 /**
    Metodo para comprobar si hemos pulsado el boton, retorna true si se ha pulsado y false en caso contrario
@@ -54,7 +42,7 @@ int getPinRelay() {
   if (MODO_DEBUG)
     Serial.println("CERRAR");
 
-  return RELAY_CLOSE_DOOR; //10
+  return RELAY_CLOSE_DOOR; //8
 }
 
 bool finCarrera(int relay) {
@@ -101,6 +89,24 @@ void play() {
   }
   Serial.println("Termina play");
   digitalWrite(relay, LOW);
+}
+
+
+
+void setup() {
+  if (MODO_DEBUG) {
+    Serial.begin(115200);
+    Serial.println("Inicio");
+  }
+
+  pinMode(RELAY_OPEN_DOOR, OUTPUT);
+  pinMode(RELAY_CLOSE_DOOR, OUTPUT);
+  pinMode(IS_OPEN_DOOR, INPUT);
+  pinMode(IS_CLOSE_DOOR, INPUT);
+  pinMode(CLICK_BUTTON, INPUT);
+  pinMode(LED_OK, OUTPUT);
+
+  digitalWrite(LED_OK, HIGH);
 }
 
 void loop() {
