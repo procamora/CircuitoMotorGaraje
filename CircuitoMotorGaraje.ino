@@ -37,7 +37,7 @@ int getPinRelay() {
     if (MODO_DEBUG)
       Serial.println("ABRIR");
 
-    return RELAY_OPEN_DOOR;  //9
+    return RELAY_OPEN_DOOR;  //7
   }
   if (MODO_DEBUG)
     Serial.println("CERRAR");

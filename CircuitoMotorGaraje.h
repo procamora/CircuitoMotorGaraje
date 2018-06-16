@@ -1,11 +1,11 @@
 #ifndef CircuitoMotorGaraje_h
 #define CircuitoMotorGaraje_h
 
-#define RELAY_OPEN_DOOR 7
-#define RELAY_CLOSE_DOOR 8
-
 #define IS_CLOSE_DOOR 11
+#define RELAY_OPEN_DOOR 7
+
 #define IS_OPEN_DOOR 12
+#define RELAY_CLOSE_DOOR 8
 
 #define TIME_MAX 30 //Tiempo maximo de rele activo
 
