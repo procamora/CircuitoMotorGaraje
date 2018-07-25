@@ -13,12 +13,16 @@
 
 #define LED_OK 3
 
-int state = HIGH;      // the current state of the output pin
-int reading;           // the current reading from the input pin
+#define ANALOG_PIN A0
+
+// Multiplicamos 50 por el porcentaje del potenciometro, va desde 0ms a 50000ms
+#define TIME_ACTIVE 500
 
 // the follow variables are long's because the time, measured in miliseconds,
 // will quickly become a bigger number than can be stored in an int.
 long time = 0;         // the last time the output pin was toggled
-long debounce = 2000;   // the debounce time, increase if the output flickers
+#define debounce 2000   // the debounce time, increase if the output flickers
+
+long potentiometerValue = 0; //valor que leemos del potenciometro, es un porcentaje 0-100
 
 #endif

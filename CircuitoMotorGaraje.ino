@@ -14,7 +14,7 @@
 
 /**
    Metodo para comprobar si hemos pulsado el boton, retorna true si se ha pulsado y false en caso contrario
-   Guarda el estado en el que esta.
+   Guarda el estado en el que esta. Para detectarlo comprueba si llega voltaje al pin, con un voltaje >=3 and <= 5
 */
 bool isClickButton() {
   bool clicked = false;
@@ -33,21 +33,25 @@ bool isClickButton() {
 */
 int getPinRelay() {
   int in = digitalRead(IS_CLOSE_DOOR);
-  if (in == HIGH) {
+  if (in == LOW) {
     if (MODO_DEBUG)
       Serial.println("ABRIR");
 
     return RELAY_OPEN_DOOR;  //7
   }
+
   if (MODO_DEBUG)
     Serial.println("CERRAR");
 
   return RELAY_CLOSE_DOOR; //8
 }
 
-bool finCarrera(int relay) {
+/**
+   Metodo que retorna true cuando el pin del sensor se pone a 0V indicando uqe llega al final del recorrido
+*/
+bool finCarrera(int pinRelay) {
   int pin;
-  if (relay == RELAY_OPEN_DOOR)
+  if (pinRelay == RELAY_OPEN_DOOR)
     pin = IS_OPEN_DOOR;
   else
     pin = IS_CLOSE_DOOR;
@@ -62,32 +66,46 @@ bool finCarrera(int relay) {
     Serial.println(String(in == HIGH));
     Serial.println();
   }
-  if (in == HIGH)
+  if (in == LOW)
     return true;
   return false;
 }
 
-
-void pause(int pin) {
-  digitalWrite(pin, LOW);
+/**
+   Metodo para cortar el voltaje del pin que esta activando un relay, se ejecuta cuando estando
+   en modo play volvemos a pulsar el boton
+*/
+void pause(int pinRelay) {
+  if (MODO_DEBUG)
+    Serial.println("pauso pin: " + pinRelay);
+  digitalWrite(pinRelay, LOW);
 }
 
+/**
+   Metodo
+*/
 void play() {
   long inicio = millis();
-  long fin = inicio + 10000; //tiempo maximo funcionando
+  long fin = inicio + (potentiometerValue * TIME_ACTIVE); // tiempo maximo funcionando
 
   int relay =  getPinRelay();
   digitalWrite(relay, HIGH);
-  Serial.println( "pin: " + String(relay));
 
-  while (!finCarrera(relay)/* || millis() < fin*/) {
-    Serial.println("play");
+  if (MODO_DEBUG)
+    Serial.println( "inicio pin: " + String(relay));
 
-    if (isClickButton())
-      pause(relay);
+  while (!finCarrera(relay) && long(millis()) <= fin) {
+    if (MODO_DEBUG) {
+      Serial.println("play");
+      Serial.println(String(millis()) + " <= " + String(fin));
+    }
+
+    // if (isClickButton())
+    // pause(relay);
     delay(1000);
   }
-  Serial.println("Termina play");
+  if (MODO_DEBUG)
+    Serial.println("Termina pin: " + relay);
   digitalWrite(relay, LOW);
 }
 
@@ -105,8 +123,15 @@ void setup() {
   pinMode(IS_CLOSE_DOOR, INPUT);
   pinMode(CLICK_BUTTON, INPUT);
   pinMode(LED_OK, OUTPUT);
-
+  pinMode(ANALOG_PIN, INPUT);
+  
   digitalWrite(LED_OK, HIGH);
+
+  long value = analogRead(ANALOG_PIN);          // realizar la lectura analógica raw
+  potentiometerValue = map(value, 0, 1023, 0, 100);  // convertir a porcentaje
+  if (MODO_DEBUG)
+    Serial.println("Tiempo maximo activo del relay: " + String(potentiometerValue * TIME_ACTIVE) + "ms");
+
 }
 
 void loop() {
