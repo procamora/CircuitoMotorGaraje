@@ -1,19 +1,19 @@
 #ifndef CircuitoMotorGaraje_h
 #define CircuitoMotorGaraje_h
 
-#define IS_CLOSE_DOOR 11
-#define RELAY_OPEN_DOOR 7
+#define IS_CLOSE_DOOR 15
+#define RELAY_OPEN_DOOR 8
 
-#define IS_OPEN_DOOR 12
-#define RELAY_CLOSE_DOOR 8
+#define IS_OPEN_DOOR 14
+#define RELAY_CLOSE_DOOR 9
 
 #define TIME_MAX 30 //Tiempo maximo de rele activo
 
 #define CLICK_BUTTON 2
 
-#define LED_OK 3
+#define LED_OK 10
 
-#define ANALOG_PIN A0
+#define ANALOG_PIN A1
 
 // Multiplicamos 50 por el porcentaje del potenciometro, va desde 0ms a 50000ms
 #define TIME_ACTIVE 500

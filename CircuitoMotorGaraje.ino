@@ -124,7 +124,7 @@ void setup() {
   pinMode(CLICK_BUTTON, INPUT);
   pinMode(LED_OK, OUTPUT);
   pinMode(ANALOG_PIN, INPUT);
-  
+
   digitalWrite(LED_OK, HIGH);
 
   long value = analogRead(ANALOG_PIN);          // realizar la lectura analógica raw
