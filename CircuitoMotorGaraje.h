@@ -25,4 +25,6 @@ long time = 0;         // the last time the output pin was toggled
 
 long potentiometerValue = 0; //valor que leemos del potenciometro, es un porcentaje 0-100
 
+bool opening = false; // para saber si estamos abriendo la puerta, usado en la funcion invert
+
 #endif

@@ -37,13 +37,15 @@ int getPinRelay() {
     if (MODO_DEBUG)
       Serial.println("ABRIR");
 
-    return RELAY_OPEN_DOOR;  //7
+    opening = true;
+    return RELAY_OPEN_DOOR;  //8
   }
 
   if (MODO_DEBUG)
     Serial.println("CERRAR");
 
-  return RELAY_CLOSE_DOOR; //8
+  opening = false;
+  return RELAY_CLOSE_DOOR; //9
 }
 
 /**
@@ -66,6 +68,7 @@ bool finCarrera(int pinRelay) {
     Serial.println(String(in == HIGH));
     Serial.println();
   }
+
   if (in == LOW)
     return true;
   return false;
@@ -73,12 +76,26 @@ bool finCarrera(int pinRelay) {
 
 /**
    Metodo para cortar el voltaje del pin que esta activando un relay, se ejecuta cuando estando
-   en modo play volvemos a pulsar el boton
+   en modo play volvemos a pulsar el boton, retorna el pin al que aplicamos voltaje
 */
-void pause(int pinRelay) {
+int invert(int pinRelay) {
   if (MODO_DEBUG)
     Serial.println("pauso pin: " + pinRelay);
-  digitalWrite(pinRelay, LOW);
+
+  // Si la puerta esta abriendose apagamos el rele y activamos el de cerrar
+  if (opening) {
+    digitalWrite(RELAY_OPEN_DOOR, LOW);
+    digitalWrite(RELAY_CLOSE_DOOR, HIGH);
+    opening = false;
+    return RELAY_CLOSE_DOOR;
+  }
+  else {
+    digitalWrite(RELAY_OPEN_DOOR, HIGH);
+    digitalWrite(RELAY_CLOSE_DOOR, LOW);
+    opening = true;
+    return RELAY_OPEN_DOOR;  //8
+
+  }
 }
 
 /**
@@ -100,9 +117,10 @@ void play() {
       Serial.println(String(millis()) + " <= " + String(fin));
     }
 
-    // if (isClickButton())
-    // pause(relay);
-    delay(1000);
+    if (isClickButton())
+      relay = invert(relay);
+
+    delay(100);
   }
   if (MODO_DEBUG)
     Serial.println("Termina pin: " + relay);
@@ -138,5 +156,5 @@ void loop() {
   if (isClickButton()) {
     play();
   }
-  delay(100);
+  delay(10);
 }
