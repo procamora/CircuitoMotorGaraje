@@ -84,14 +84,16 @@ int invert(int pinRelay) {
 
   // Si la puerta esta abriendose apagamos el rele y activamos el de cerrar
   if (opening) {
-    digitalWrite(RELAY_OPEN_DOOR, LOW);
+    digitalWrite(RELAY_OPEN_DOOR, LOW); //Primero apagamos para no tener los 2 cables con tension
+    delay(300);
     digitalWrite(RELAY_CLOSE_DOOR, HIGH);
     opening = false;
     return RELAY_CLOSE_DOOR;
   }
   else {
-    digitalWrite(RELAY_OPEN_DOOR, HIGH);
     digitalWrite(RELAY_CLOSE_DOOR, LOW);
+    delay(300);
+    digitalWrite(RELAY_OPEN_DOOR, HIGH);
     opening = true;
     return RELAY_OPEN_DOOR;  //8
 
