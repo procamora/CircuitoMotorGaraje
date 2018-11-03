@@ -92,7 +92,7 @@ Designator	Footprint	Mid X	Mid Y	Ref X	Ref Y	Pad X	Pad Y	Layer	Rotation	Comment
 
 [pcb]: PCB_PCB_20181103200253.png
 [eschematic]: Schematic_CircuitoMotorGaraje_Esquema_20181103200226.png
-[automata]: Automata
+[automata]: Automata.jpg
 
 
 
