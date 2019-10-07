@@ -20,7 +20,7 @@
 
 // the follow variables are long's because the time, measured in miliseconds,
 // will quickly become a bigger number than can be stored in an int.
-long time = 0;         // the last time the output pin was toggled
+unsigned long times = 0;         // the last time the output pin was toggled
 #define debounce 2000   // the debounce time, increase if the output flickers
 
 long potentiometerValue = 0; //valor que leemos del potenciometro, es un porcentaje 0-100

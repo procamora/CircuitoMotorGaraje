@@ -19,13 +19,14 @@
 bool isClickButton() {
   bool clicked = false;
   int reading = digitalRead(CLICK_BUTTON);
-  if (reading == HIGH && millis() - time > debounce) {
-    time = millis();
+  if (reading == HIGH && millis() - times > debounce) {
+    times = millis();
     clicked = true;
   }
 
-  return clicked;
-  Serial.println(String(clicked));
+  delay(1000);
+  //Serial.println(String(clicked));
+  return clicked && digitalRead(CLICK_BUTTON) == HIGH;
 }
 
 /**
@@ -49,7 +50,7 @@ int getPinRelay() {
 }
 
 /**
-   Metodo que retorna true cuando el pin del sensor se pone a 0V indicando uqe llega al final del recorrido
+   Metodo que retorna true cuando el pin del sensor se pone a 0V indicando que llega al final del recorrido
 */
 bool finCarrera(int pinRelay) {
   int pin;
@@ -78,7 +79,8 @@ bool finCarrera(int pinRelay) {
    Metodo para cortar el voltaje del pin que esta activando un relay, se ejecuta cuando estando
    en modo play volvemos a pulsar el boton, retorna el pin al que aplicamos voltaje
 */
-int invert(int pinRelay) {
+/*
+  int invert(int pinRelay) {
   if (MODO_DEBUG)
     Serial.println("pauso pin: " + pinRelay);
 
@@ -98,14 +100,15 @@ int invert(int pinRelay) {
     return RELAY_OPEN_DOOR;  //8
 
   }
-}
+  }
+*/
 
 /**
    Metodo
 */
 void play() {
-  long inicio = millis();
-  long fin = inicio + (potentiometerValue * TIME_ACTIVE); // tiempo maximo funcionando
+  unsigned long inicio = millis();
+  unsigned long fin = inicio + (potentiometerValue * TIME_ACTIVE); // tiempo maximo funcionando
 
   int relay =  getPinRelay();
   digitalWrite(relay, HIGH);
@@ -113,16 +116,21 @@ void play() {
   if (MODO_DEBUG)
     Serial.println( "inicio pin: " + String(relay));
 
+  //bool one_delay = true;
+  delay(1000);  // esperamos 1 segudo antes de la primera comprobacion para evitar falsos positivos
+
   while (!finCarrera(relay) && long(millis()) <= fin) {
     if (MODO_DEBUG) {
       Serial.println("play");
       Serial.println(String(millis()) + " <= " + String(fin));
     }
 
-    if (isClickButton())
-      relay = invert(relay);
 
-    delay(100);
+
+    //if (isClickButton())
+    //  relay = invert(relay);
+
+    delay(80);
   }
   if (MODO_DEBUG)
     Serial.println("Termina pin: " + relay);
@@ -156,7 +164,10 @@ void setup() {
 
 void loop() {
   if (isClickButton()) {
+    // delay(4000);
+    //if (digitalRead(CLICK_BUTTON)) {
     play();
+    // }
   }
   delay(10);
 }
