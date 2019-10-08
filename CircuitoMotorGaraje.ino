@@ -24,8 +24,16 @@ bool isClickButton() {
     clicked = true;
   }
 
-  delay(1000);
+
+  ///////////////////////////////////////
+  // FIXME IMPORTANTE, ESTE IF NO SE HA CHEKEADO, PROBARLO CUANDO TENGA ACCESO AL HARDWARE
+  //////////////////////////////////////
+  // solo esperamos si nota una pulsacion de boton
+  // Puede que haya que aumentarlo un poco, probar con el mando los tiempos de espera
+  if (clicked)
+    delay(1000);
   //Serial.println(String(clicked));
+  //despues de 1 seg volvemos a comprobar si esta pulsado, esto es para intentar evitar falsos positivos alargando el tiempo de pulsacion
   return clicked && digitalRead(CLICK_BUTTON) == HIGH;
 }
 
@@ -116,17 +124,13 @@ void play() {
   if (MODO_DEBUG)
     Serial.println( "inicio pin: " + String(relay));
 
-  //bool one_delay = true;
   delay(1000);  // esperamos 1 segudo antes de la primera comprobacion para evitar falsos positivos
 
-  while (!finCarrera(relay) && long(millis()) <= fin) {
+  while (!finCarrera(relay) && (unsigned long) millis() <= fin) {
     if (MODO_DEBUG) {
       Serial.println("play");
       Serial.println(String(millis()) + " <= " + String(fin));
     }
-
-
-
     //if (isClickButton())
     //  relay = invert(relay);
 
@@ -137,11 +141,26 @@ void play() {
   digitalWrite(relay, LOW);
 }
 
+/**
+   Metodo que comprueba si se ha superado el valor maximo de las variables que almacenan el valor de millis(),
+   cuando se supera para a ser un numero negativo. Lo comprueba con 100 seg de adelanto para evitar fallos durante
+   el proceso de abrir o cerrar la puerta
+*/
+bool isReboot() {
+  long millisOverflow = millis() + 100000;
+  if (millisOverflow < 0) {
+    if (MODO_DEBUG)
+      Serial.println("reinicio");
+    return true;
+  }
+  return false;
+}
+
 
 
 void setup() {
   if (MODO_DEBUG) {
-    Serial.begin(115200);
+    Serial.begin(9600);
     Serial.println("Inicio");
   }
 
@@ -156,6 +175,9 @@ void setup() {
   digitalWrite(LED_OK, HIGH);
 
   long value = analogRead(ANALOG_PIN);          // realizar la lectura analógica raw
+  times = 0;         //  lo inicializamos aqui porque el reset de millis es necesario que tambien lo reinizialice
+  Serial.println(times);
+
   potentiometerValue = map(value, 0, 1023, 0, 100);  // convertir a porcentaje
   if (MODO_DEBUG)
     Serial.println("Tiempo maximo activo del relay: " + String(potentiometerValue * TIME_ACTIVE) + "ms");
@@ -163,6 +185,13 @@ void setup() {
 }
 
 void loop() {
+  // si millis genera un overflow reset de millis
+  if (isReboot()) {
+    RESTART;
+    //setup(); //ya lo hace restart
+  }
+  Serial.println(millis());
+
   if (isClickButton()) {
     // delay(4000);
     //if (digitalRead(CLICK_BUTTON)) {
