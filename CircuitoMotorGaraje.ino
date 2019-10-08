@@ -8,7 +8,7 @@
 
 #include "CircuitoMotorGaraje.h"
 
-#define MODO_DEBUG false
+#define MODO_DEBUG true
 
 
 
@@ -127,6 +127,7 @@ void play() {
   delay(1000);  // esperamos 1 segudo antes de la primera comprobacion para evitar falsos positivos
 
   while (!finCarrera(relay) && (unsigned long) millis() <= fin) {
+    wdt_reset(); // Actualizar el watchdog para que no produzca un reinicio
     if (MODO_DEBUG) {
       Serial.println("play");
       Serial.println(String(millis()) + " <= " + String(fin));
@@ -159,6 +160,9 @@ bool isReboot() {
 
 
 void setup() {
+  wdt_disable(); // Desactivar el watchdog mientras se configura
+  wdt_enable(WDTO_8S); // Configurar a ocho segundos
+
   if (MODO_DEBUG) {
     Serial.begin(9600);
     Serial.println("Inicio");
@@ -184,17 +188,34 @@ void setup() {
 }
 
 void loop() {
-  // si millis genera un overflow reset de millis
+  /////////////
+  // PRUEBAS
+  Serial.println(times);
+  times = 12;
+  Serial.println("inicio loop");
+  Serial.println(times);
+
+  wdt_reset(); // Actualizar el watchdog para que no produzca un reinicio
+  delay(5000);
+  Serial.println("despues 5000");
+
+  wdt_reset(); // Actualizar el watchdog para que no produzca un reinicio
+  delay(6000);
+  Serial.println("despues 6000");
+  wdt_reset(); // Actualizar el watchdog para que no produzca un reinicio
+  //delay(9000);
+  Serial.println("despues 9000");
+  ///////////////////////
+
+  // si millis genera unoverflow reset con watch dog
   if (isReboot()) {
-    RESTART;
-    //setup(); //ya lo hace restart
+    while (true) {}
+    //delay(9000)
   }
 
+  wdt_reset(); // Actualizar el watchdog para que no produzca un reinicio
   if (isClickButton()) {
-    // delay(4000);
-    //if (digitalRead(CLICK_BUTTON)) {
     play();
-    // }
   }
   delay(10);
 }

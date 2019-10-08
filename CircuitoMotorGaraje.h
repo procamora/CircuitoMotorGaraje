@@ -1,6 +1,9 @@
 #ifndef CircuitoMotorGaraje_h
 #define CircuitoMotorGaraje_h
 
+
+#include <avr/wdt.h> // Incluir la librería que contiene el watchdog 
+
 #define IS_CLOSE_DOOR 12
 #define RELAY_OPEN_DOOR 8
 
@@ -27,6 +30,4 @@ long potentiometerValue = 0; //valor que leemos del potenciometro, es un porcent
 
 bool opening = false; // para saber si estamos abriendo la puerta, usado en la funcion invert
 
-// PUEDO USAR ESTE RESET POR SOFTWARE YA QUE NO USO NINGUNA LIBRERIA QUE PUEDA FALLAR POR CULPA DEL REINICIO DE MILLIS
-#define RESTART asm("jmp 0x0000") // esto parece que reinicia la funcion millis, pero no resetea el estado de los pines
 #endif

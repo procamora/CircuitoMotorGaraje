@@ -8,6 +8,7 @@ Codigo y circuito para activar el motor de una puerta de garaje
 
  - [ ] Comprobar `if (clicked) delay(1000);` con la puerta del garaje
  - [ ] Checkear que funciona bien el reset por software
+ - [ ] Implementar  Watch Dog Timer
 
 
 La automata con los distintos estados
