@@ -8,7 +8,7 @@
 
 #include "CircuitoMotorGaraje.h"
 
-#define MODO_DEBUG true
+#define MODO_DEBUG false
 
 
 
@@ -176,7 +176,6 @@ void setup() {
 
   long value = analogRead(ANALOG_PIN);          // realizar la lectura analógica raw
   times = 0;         //  lo inicializamos aqui porque el reset de millis es necesario que tambien lo reinizialice
-  Serial.println(times);
 
   potentiometerValue = map(value, 0, 1023, 0, 100);  // convertir a porcentaje
   if (MODO_DEBUG)
@@ -190,7 +189,6 @@ void loop() {
     RESTART;
     //setup(); //ya lo hace restart
   }
-  Serial.println(millis());
 
   if (isClickButton()) {
     // delay(4000);
