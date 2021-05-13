@@ -19,7 +19,8 @@
 bool isClickButton() {
   bool clicked = false;
   int reading = digitalRead(CLICK_BUTTON);
-  if (reading == HIGH && millis() - times > debounce) {
+  // https://www.norwegiancreations.com/2018/10/arduino-tutorial-avoiding-the-overflow-issue-when-using-millis-and-micros/
+  if (reading == HIGH && (unsigned long)(millis() - times) > debounce) {
     times = millis();
     clicked = true;
   }
